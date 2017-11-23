@@ -33,7 +33,7 @@
 @interface MBHudDemoViewController () <NSURLSessionDelegate>
 
 @property (nonatomic, strong) NSArray<NSArray<MBExample *> *> *examples;
-// Atomic, because it may be cancelled from main thread, flag is read on a background thread
+// Atomic, because it may be canceled from main thread, flag is read on a background thread
 @property (atomic, assign) BOOL canceled;
 
 @end
@@ -56,7 +56,7 @@
         [MBExample exampleWithTitle:@"Custom view" selector:@selector(customViewExample)],
         [MBExample exampleWithTitle:@"With action button" selector:@selector(cancelationExample)],
         [MBExample exampleWithTitle:@"Mode switching" selector:@selector(modeSwitchingExample)]],
-      @[[MBExample exampleWithTitle:@"On window" selector:@selector(indeterminateExample)],
+      @[[MBExample exampleWithTitle:@"On window" selector:@selector(windowExample)],
         [MBExample exampleWithTitle:@"NSURLSession" selector:@selector(networkingExample)],
         [MBExample exampleWithTitle:@"Determinate with NSProgress" selector:@selector(determinateNSProgressExample)],
         [MBExample exampleWithTitle:@"Dim background" selector:@selector(dimBackgroundExample)],
@@ -259,7 +259,7 @@
 
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         // Do something useful in the background and update the HUD periodically.
-        [self doSomeWorkWithMixedProgress];
+        [self doSomeWorkWithMixedProgress:hud];
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hideAnimated:YES];
         });
@@ -340,8 +340,7 @@
     }
 }
 
-- (void)doSomeWorkWithMixedProgress {
-    MBProgressHUD *hud = [MBProgressHUD HUDForView:self.navigationController.view];
+- (void)doSomeWorkWithMixedProgress:(MBProgressHUD *)hud {
     // Indeterminate mode
     sleep(2);
     // Switch to determinate mode
